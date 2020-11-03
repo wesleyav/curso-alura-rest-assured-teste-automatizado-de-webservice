@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.path.xml.XmlPath;
 
@@ -18,13 +19,14 @@ public class UsuariosWSTest {
 	
 	private Usuario mauricio;
 	private Usuario guilherme;
-	private Object usuario1;
-	private Object usuario2;
-	
+		
 	@Before
 	public void setUp() {
 		mauricio = new Usuario(1L,"Mauricio Aniche","mauricio.aniche@caelum.com.br");
 		guilherme = new Usuario(2L,"Guilherme Silveira","guilherme.silveira@caelum.com.br");
+		
+//		RestAssured.baseURI = "http:/www.edereco-do-meu-ws.com.br";
+//		RestAssured.port = 80;
 	}
 	
 	@Test
@@ -84,6 +86,26 @@ JsonPath path = given()
         assertEquals(2, total);
     }
 	
+	@Test
+	public void deveAdicionarUmUsuario() {
+		Usuario joao = new Usuario("Joao da Silva", "joaodasilva.com");
+		
+		XmlPath path = given()
+		.header("Accept", "application/xml")
+		.contentType("application/xml")
+		.body(joao)
+		.expect()
+		.statusCode(200)
+		.when()
+		.post("/usuarios")
+		.andReturn()
+		.xmlPath();
+		
+		Usuario resposta = path.getObject("usuario", Usuario.class);
+		
+		assertEquals("Joao da Silva", 	resposta.getNome());
+		assertEquals("joaodasilva.com", resposta.getEmail());
+	}
 	
 	
 }
