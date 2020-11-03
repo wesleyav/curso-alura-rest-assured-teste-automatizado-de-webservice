@@ -72,6 +72,18 @@ JsonPath path = given()
         assertEquals(esperado, leilao);
     }
 	
+	@Test
+    public void deveRetornarQuantidadeDeLeiloes() {
+        XmlPath path = given()
+                .header("Accept", "application/xml")
+                .get("/leiloes/total")
+                .andReturn().xmlPath();
+
+        int total = path.getInt("int");
+
+        assertEquals(2, total);
+    }
+	
 	
 	
 }
