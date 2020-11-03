@@ -105,6 +105,11 @@ JsonPath path = given()
 		
 		assertEquals("Joao da Silva", 	resposta.getNome());
 		assertEquals("joaodasilva.com", resposta.getEmail());
+		
+		given()
+		.contentType("application/xml").body(resposta)
+		.expect().statusCode(200)
+		.when().delete("/usuarios/deleta").andReturn().asString();
 	}
 	
 	
