@@ -112,5 +112,35 @@ JsonPath path = given()
 		.when().delete("/usuarios/deleta").andReturn().asString();
 	}
 	
+	@Test
+    public void deveInserirLeiloes() {
+        Usuario mauricio = new Usuario(1l, "Mauricio Aniche", "mauricio.aniche@caelum.com.br");
+        Leilao leiloes = new Leilao(1l, "Geladeira", 800.0, mauricio, false);
+
+        XmlPath retorno = 
+                given()
+                    .header("Accept", "application/xml")
+                    .contentType("application/xml")
+                    .body(leiloes)
+                .expect()
+                    .statusCode(200)
+                .when()
+                    .post("/leiloes")
+                .andReturn()
+                    .xmlPath();
+
+        Leilao resposta = retorno.getObject("leilao", Leilao.class);
+
+        assertEquals("Geladeira", resposta.getNome());
+
+        given()
+            .contentType("application/xml")
+            .body(resposta)
+        .expect()
+            .statusCode(200)
+        .when()
+            .delete("/leiloes/deletar")
+        .andReturn().asString();
+    }
 	
 }
